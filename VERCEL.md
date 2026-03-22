@@ -28,14 +28,21 @@ Import the project in the [Vercel dashboard](https://vercel.com/new) → **Add N
 
 ## 4. Environment variables
 
-In **Project → Settings → Environment Variables**, add:
+In **Project → Settings → Environment Variables**, the app needs **one** Postgres URL. It checks, in order:
 
-| Name            | Value                                      | Environments        |
-|-----------------|--------------------------------------------|---------------------|
-| `DATABASE_URL`  | Your Postgres URL (pooled URL if offered) | Production, Preview |
+1. `DATABASE_URL`
+2. `POSTGRES_PRISMA_URL` (often set automatically by **Vercel Postgres**)
+3. `POSTGRES_URL`
 
-- Use the **same** database for Preview and Production only if you intend to; otherwise create a separate DB for previews and add a Preview-specific `DATABASE_URL`.
-- `postinstall` already runs `prisma generate`; `vercel:build` runs `prisma generate` again before `next build` so the client always matches the schema on CI.
+| Name                   | When to use |
+|------------------------|-------------|
+| `DATABASE_URL`         | Neon, Supabase, or any manual URL — **recommended** if you paste from Neon’s dashboard. |
+| `POSTGRES_PRISMA_URL`  | Usually present if you use the **Vercel Postgres** integration; no extra step after this code change. |
+| `POSTGRES_URL`         | Fallback from some Vercel / template setups. |
+
+- Enable **Production** and **Preview** (and **Development** if you use `vercel dev`) so RSVP works on deployed URLs.
+- If you only had variables in **Development**, Production deployments will still see “database URL not set” — re-add for **Production**.
+- After changing env vars, **Redeploy** (Deployments → … → Redeploy) so serverless functions pick up new values.
 
 ## 5. Build command
 
@@ -47,7 +54,7 @@ In **Project → Settings → General → Build & Development Settings**:
 
 `vercel:build` runs `prisma migrate deploy` (applies pending migrations to the database your `DATABASE_URL` points at), then `next build`. `npm install` already runs `postinstall` → `prisma generate`.
 
-**Important:** `DATABASE_URL` must be set for the environment that runs the build (usually Production and Preview), or `migrate deploy` will fail.
+**Important:** At least one of the URLs above must be set for the environment that runs the build (usually Production and Preview), or `migrate deploy` will fail. The same URL is used at **runtime** for `/api/rsvp`.
 
 ## 6. Runtime
 
