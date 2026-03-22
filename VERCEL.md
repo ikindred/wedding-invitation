@@ -22,7 +22,9 @@ That runs the SQL in `prisma/migrations/` and creates the `rsvps` table. You can
 
 ## 3. Connect the Git repo to Vercel
 
-Import the project in the [Vercel dashboard](https://vercel.com/new) and select this repository.
+Repository: [github.com/ikindred/wedding-invitation](https://github.com/ikindred/wedding-invitation).
+
+Import the project in the [Vercel dashboard](https://vercel.com/new) → **Add New** → **Project** → import `ikindred/wedding-invitation` (after your code is pushed to GitHub).
 
 ## 4. Environment variables
 
